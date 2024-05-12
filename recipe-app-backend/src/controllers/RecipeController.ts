@@ -33,6 +33,39 @@ class RecipeController {
         }
     };
 
+    static getRecipesById = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.query;
+            
+            // Validate if id is provided
+            if (!id || typeof id !== 'string') {
+                return res.status(400).json({ error: 'Recipe ID is required' });
+            }
+
+            const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+            const { meals } = response.data;
+
+            if (!meals || Object.keys(meals).length === 0) {
+                return res.status(404).json({ error: 'Recipe not found' });
+            }
+
+            const meal = meals[0];
+
+            const recipe = {
+                idMeal: meal.idMeal,
+                title: meal.strMeal,
+                category: meal.strCategory,
+                imageUrl: meal.strMealThumb,
+                instructions: meal.strInstructions
+            };
+
+            res.status(200).json(recipe);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+
     static addRecipe = async (req: Request, res: Response) => {
         try {
             const { idMeal, title, category, imageUrl, instructions } = req.body;
@@ -56,7 +89,6 @@ class RecipeController {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            // Check if the recipe already exists in favorites
             if (user.favorites.includes(recipeId)) {
                 return res.status(400).json({ error: 'Recipe already in favorites' });
             }
@@ -77,13 +109,11 @@ class RecipeController {
         try {
             const { userId } = req.params;
 
-            // Check if user exists
             const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            // Fetch favorite recipes details
             const favoriteRecipes:any = [];
             for (const recipeId of user.favorites) {
                 const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`);
