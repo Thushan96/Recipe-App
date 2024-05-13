@@ -89,7 +89,7 @@ class RecipeController {
             }
 
             if (user.favorites.includes(recipeId)) {
-                return res.status(400).json({ error: 'Recipe already in favorites' });
+                return res.status(200).json({ error: 'Recipe already in favorites' });
             }
 
             const validRecipeId = String(recipeId);
