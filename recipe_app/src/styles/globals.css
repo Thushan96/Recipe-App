@@ -1,0 +1,38 @@
+@tailwind base; 
+@tailwind components;
+@tailwind utilities;
+
+html{
+scroll-behavior: smooth;
+}
+
+@layer base {
+    body {
+      @apply bg-[#fdf8f9] text-[#1f2937] tracking-wide
+      /* tracking-wide--> Sets the letter spacing to a wider value, resulting in slightly increased spacing between characters. */
+    }
+  
+    h1, h2, h3, h4, h5, h6 {
+      @apply font-bold
+    }
+  
+    h1 {
+      @apply text-4xl sm:text-5xl md:text-6xl font-[Raleway]
+      /* text-4xl-->4xl on default screen size
+      sm:text-5xl-->5xl on small screen size
+      md:text-6xl-->6xl on medium screen size */
+    }
+  
+    h2 {
+      @apply text-3xl sm:text-4xl
+    }
+    
+    li {
+      @apply cursor-pointer
+    }
+  
+    button {
+      @apply shadow-2xl shadow-gray-300 rounded-2xl border border-[#eb6686] text-white;
+    }
+    
+  }
